@@ -63,17 +63,17 @@ include ("partials/navbar.php");
     <div class="carousel-inner">
       <div class="carousel-item active">
         <div class="carousel-image-container">
-          <img src="images/charityphoto1.jpeg" class="d-block w-100 carousel-image" alt="Charity Slides" />
+          <img src="./images/charityphoto1.jpeg" class="d-block w-100 carousel-image" alt="Charity Slides" />
         </div>
       </div>
       <div class="carousel-item">
         <div class="carousel-image-container">
-          <img src="images/charityphoto2.avif" class="d-block w-100 carousel-image" alt="Charity Slides" />
+          <img src="./images/charityphoto2.avif" class="d-block w-100 carousel-image" alt="Charity Slides" />
         </div>
       </div>
       <div class="carousel-item">
         <div class="carousel-image-container">
-          <img src="images/charityphoto3.jpeg" class="d-block w-100 carousel-image" alt="Charity Slides" />
+          <img src="./images/charityphoto3.jpeg" class="d-block w-100 carousel-image" alt="Charity Slides" />
         </div>
       </div>
     </div>
