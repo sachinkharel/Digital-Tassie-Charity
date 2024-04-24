@@ -1,0 +1,46 @@
+
+body{
+    padding: 10px;
+}
+
+
+#carouselExampleAutoplaying {
+    height: 400px; /* Set a fixed height for the carousel */
+}
+
+.carousel-inner .carousel-item img {
+    height: 100%; /* Make images fill the carousel height */
+    width: auto; /* Ensure images maintain their aspect ratio */
+    object-fit: contain; /* This property makes the image fit within the container without distortion */
+}
+
+.sponsorsCont{
+    margin: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    border-top: 2px #f1f1f1 solid;
+    border-bottom: 2px #f1f1f1 solid;
+}
+
+.homepageHeader {
+    padding: 50px;
+    margin: 30px;
+    text-align: center ;
+}
+
+.detailsHeader {
+    background-color: #f1f1f1;
+    padding: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.contactAddress{
+    margin: 40px;
+}
+
+.custom-btn-green {
+    background-color: #b2edda; 
+
+}
+
