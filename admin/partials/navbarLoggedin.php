@@ -27,23 +27,24 @@ require 'config/database.php';
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="../charityHome.php">Home</a>
+                        <a class="nav-link active" aria-current="page" href="<?= ROOT_URL ?>charityHome.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="../charityList.php">Charity List</a>
+                        <a class="nav-link" aria-current="page" href="<?= ROOT_URL ?>charityList.php">Charity List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../admin/manageCharity.php">Manage Charity</a>
+                        <a class="nav-link" href="<?= ROOT_URL ?>admin/manageCharity.php">Manage Charity</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../admin/masterCharity.php">Master Charity</a>
+                        <a class="nav-link" href="<?= ROOT_URL ?>admin/masterCharity.php">Master Charity</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="images/guest.jpg" alt="Guest" width="30" height="30" class="rounded-circle">
+                            <img src="<?= ROOT_URL ?>images/guest.jpg" alt="Guest" width="30" height="30"
+                                class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li><span class="dropdown-item-text d-block text-center">Welcome, DTC</span></li>

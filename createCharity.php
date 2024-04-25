@@ -98,7 +98,7 @@ include ("partials/navbar.php");
             // window.location.href = "charityPage.html?data=" + encodedData;
 
             sessionStorage.setItem('formData', JSON.stringify(formData));
-            window.location.href = "charityPage.html";
+            window.location.href = "<?= ROOT_URL ?>charityPage.php";
 
 
         });
