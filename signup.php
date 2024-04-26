@@ -1,4 +1,5 @@
 <?php
+session_start();
 include ("partials/navbar.php");
 ?>
 
@@ -35,7 +36,13 @@ include ("partials/navbar.php");
 
     <div class="container col-4 mt-5">
         <h2 class="mb-4 text-center">Signup</h2>
-        <form>
+        <?php
+        if (isset($_SESSION['signup'])) {
+            echo '<p style="color: red;">' . $_SESSION['signup'] . '</p>';
+            unset($_SESSION['signup']); // Clear the error message after displaying it
+        }
+        ?>
+        <form action="<?= ROOT_URL ?>signupLogic.php" enctype="multipart/form-data" method="post">
             <div class="mb-3">
                 <label for="fname" class="form-label">First name</label>
                 <input type="text" id="fname" name="fname" class="form-control" required>
@@ -53,27 +60,33 @@ include ("partials/navbar.php");
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" name="password" class="form-control"
-                    pattern="^(?=.*[A-Z].*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{5,10}$"
-                    title="Password must be 5-10 characters with 2 uppercase, 1 number, and 1 special character."
+                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,12}$"
+                    title="Password must be 5-12 characters with 1 uppercase, 1 number, and 1 special character."
                     required>
             </div>
             <div class="mb-3">
                 <label for="confirmpassword" class="form-label">Confirm Password</label>
                 <input type="password" id="confirmpassword" name="confirmpassword" class="form-control"
-                    pattern="^(?=.*[A-Z].*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{5,10}$"
-                    title="Password must be 5-10 characters with 2 uppercase, 1 number, and 1 special character."
+                    pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,12}$"
+                    title="Password must be 5-12 characters with 1 uppercase, 1 number, and 1 special character."
                     required>
             </div>
             <div class="mb-3">
                 <label for="dob" class="form-label">Date of Birth</label>
                 <input type="date" id="dob" name="dob" class="form-control" required>
             </div>
+
+            <div class="mb-3">
+                <label for="profileimage" class="form-label">Profile Image</label>
+                <input type="file" id="profileimage" name="profileimage" class="form-control" required>
+            </div>
+
             <div class="mb-3 form-check">
                 <input type="checkbox" id="terms" name="terms" value="agree" class="form-check-input" required>
                 <label class="form-check-label" for="terms">I acknowledge that I have read and understand the terms and
                     conditions.</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" name="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 
