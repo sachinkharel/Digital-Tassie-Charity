@@ -1,5 +1,19 @@
 <?php
 require 'config/database.php';
+
+if (isset($_SESSION['user-id'])) {
+    // Fetch user details including avatar path from the database
+    $userId = $_SESSION['user-id'];
+    // Query to fetch user details based on user ID
+    $user_query = "SELECT avatar FROM users WHERE id = $userId";
+    $user_result = mysqli_query($connection, $user_query);
+
+    // Check if the query was successful and if user details were fetched
+    if ($user_result && mysqli_num_rows($user_result) > 0) {
+        $user_data = mysqli_fetch_assoc($user_result);
+        $avatar_path = $user_data['avatar'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,17 +49,20 @@ require 'config/database.php';
                     <li class="nav-item">
                         <a class="nav-link" href="<?= ROOT_URL ?>admin/manageCharity.php">Manage Charity</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= ROOT_URL ?>admin/masterCharity.php">Master Charity</a>
-                    </li>
+                    <?php if (isset($_SESSION['user_is_admin'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= ROOT_URL ?>admin/masterCharity.php">Master Charity</a>
+                        </li>
+                    <?php endif ?>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<?= ROOT_URL ?>images/guest.jpg" alt="Guest" width="30" height="30"
-                                class="rounded-circle">
+                            <img src="<?php echo ROOT_URL . "images/" . $avatar_path; ?>" alt="Guest" width="30"
+                                height="30" class="rounded-circle">
                         </a>
+                        <!-- <?php echo $avatar_path ?> -->
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <li><span class="dropdown-item-text d-block text-center">Welcome, DTC</span></li>
                             <li>
@@ -55,7 +72,7 @@ require 'config/database.php';
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="../charityHome.php">Logout</a></li>
+                            <li><a class="dropdown-item" href="<?= ROOT_URL ?>logout.php">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

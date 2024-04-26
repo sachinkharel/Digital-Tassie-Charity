@@ -1,5 +1,10 @@
 <?php
-include ("partials/navbarLoggedin.php");
+include ("config/database.php");
+if (isset($_SESSION['user-id'])) {
+    include ("partials/navbarLoggedin.php");
+} else {
+    include ("../partials/navbar.php");
+}
 ?>
 
 <!DOCTYPE html>

@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
             if ($user_record["is_admin"] == 1) {
                 $_SESSION["user_is_admin"] = true;
             }
-            header('location:' . ROOT_URL . 'admin/userDetails.php');
+            header('location:' . ROOT_URL . 'charityHome.php');
         } else {
             $_SESSION["signin"] = "Password do not match.";
         }

@@ -35,6 +35,7 @@ include ("partials/navbar.php");
         </p>
       </div>
     <?php endif ?>
+
     <?php
     if (isset($_SESSION['signin'])) {
       echo '<p style="color: red;">' . $_SESSION['signin'] . '</p>';
