@@ -67,7 +67,7 @@ if (isset($_POST['submit'])) {
             header("location:" . ROOT_URL . "signup.php");
             die();
         } else {
-            $_SESSION["signup-success"] = "Registration successful";
+            $_SESSION["signup-success"] = "Registration successful. Please Login!";
             header("location:" . ROOT_URL . "login.php");
             die();
         }
@@ -75,5 +75,6 @@ if (isset($_POST['submit'])) {
 
 } else {
     // Handle case where form is not submitted
+    header('location:' . ROOT_URL . 'signup.php');
 }
 ?>
