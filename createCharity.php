@@ -1,5 +1,17 @@
 <?php
 include ("partials/navbar.php");
+
+$current_admin_id = $_SESSION['user-id'];
+
+$fetch_user_query = "SELECT can_postin FROM users WHERE id = '$current_admin_id'";
+$fetch_user_result = mysqli_query($connection, $fetch_user_query);
+
+// Fetch the result as an associative array
+$user_row = mysqli_fetch_assoc($fetch_user_result);
+
+// Extract the category from the associative array
+$category = $user_row['can_postin'];
+
 ?>
 
 
@@ -36,7 +48,7 @@ include ("partials/navbar.php");
     </div>
 
     <!-- Using bootstrap form to be able to create a charity with necessary inputs,
-        in assignment 2 we'll store the values from this form to category table -->
+        in assignment 2 we'll store the values from this form to charity table -->
 
     <div class="container">
         <div class="row">
@@ -52,36 +64,21 @@ include ("partials/navbar.php");
                     </div>
                     <div class="mb-3">
                         <label for="charityCategory" class="form-label">Charity Category</label>
-                        <select class="form-select" id="charityCategory" required>
-                            <option value="">Select Category</option>
-                            <option value="Health">Health</option>
-                            <option value="Education">Education</option>
-                            <option value="Environment">Environment</option>
-                        </select>
+                        <div class="form-control" id="charityCategory"><?php echo $category; ?></div>
                     </div>
                     <div class="mb-3">
-                        <label for="goalAmount" class="form-label">Goal Amount (%)</label>
-                        <input type="number" class="form-control" id="goalAmount" min="0" max="100" required>
+                        <label for="goalAmount" class="form-label">Goal Amount</label>
+                        <input type="number" class="form-control" id="goalAmount" min="0" max="10000" required>
                     </div>
                     <div class="mb-3">
-                        <label for="progress" class="form-label">Progress</label>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
-                                aria-valuemin="0" aria-valuemax="100" id="progressBar"></div>
-                        </div>
+                        <label for="charityimage" class="form-label">Charity Flyer</label>
+                        <input type="file" id="charityimage" name="charityimage" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById("goalAmount").addEventListener("input", function () {
-            var goalAmount = document.getElementById("goalAmount").value;
-            var progressBar = document.getElementById("progressBar");
-            progressBar.style.width = goalAmount + "%";
-        });
-    </script>
 
     <!-- This script is to give the experience of how will the charity page look like when we create the charity,
         here we've used user's browser local cookie storage to store and to be able to fetch that data on charity.html page, 
