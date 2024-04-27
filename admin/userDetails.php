@@ -1,10 +1,13 @@
 <?php
-include ("config/database.php");
-if (isset($_SESSION['user-id'])) {
-  include ("partials/navbarLoggedin.php");
-} else {
-  include ("../partials/navbar.php");
-}
+include ("partials/navbarLoggedin.php");
+
+// fetch all user except current logged in
+
+$current_admin_id = $_SESSION['user-id'];
+
+$query = "SELECT * FROM users WHERE NOT id = $current_admin_id";
+$users = mysqli_query($connection, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -44,102 +47,70 @@ if (isset($_SESSION['user-id'])) {
   </div>
   <!-- Using bootstrap table to list all the users, this page this only available for System Administrator who can edit user role and category -->
   <!-- In this page we'll fetch all the data from user table and list it, in assignment 2 -->
-  <div class="container col-9">
-    <div class="row">
-      <table class=" table table-bordered" id="managetable">
-        <thead>
-          <tr>
-            <th>S.N.</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Rajesh Chaudhary</td>
-            <td>raayz987@mail.com</td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Role</option>
-                <option value="1">System Manager</option>
-                <option value="2">Project Administrator</option>
-              </select>
-            </td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Category</option>
-                <option value="1">Health</option>
-                <option value="2">Education</option>
-                <option value="3">Environment</option>
-              </select>
-            </td>
-          </tr>
+  <form method="post" action="updateUsers.php">
+    <div class="container col-9 ">
+      <div class="row">
+        <table class="table table-bordered " id="managetable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php while ($user = mysqli_fetch_assoc($users)): ?>
+              <tr>
+                <td><?= "{$user['firstname']} {$user['lastname']}" ?> </td>
+                <td><?= "{$user['email']}" ?></td>
+                <td>
+                  <!-- Hidden field for original role value -->
+                  <input type="hidden" name="original_is_admin[<?= $user['id'] ?>]" value="<?= $user['is_admin'] ?>">
+                  <select class="form-select" name="is_admin[<?= $user['id'] ?>]" aria-label="Default select example">
+                    <option value="1" <?= ($user['is_admin'] == 1) ? "selected" : "" ?>>System Manager</option>
+                    <option value="0" <?= ($user['is_admin'] == 0) ? "selected" : "" ?>>Project Administrator</option>
+                  </select>
+                </td>
+                <td>
+                  <!-- Hidden field for original category value -->
+                  <input type="hidden" name="original_can_postin[<?= $user['id'] ?>]" value="<?= $user['can_postin'] ?>">
+                  <select class="form-select" name="can_postin[<?= $user['id'] ?>]" aria-label="Default select example">
+                    <?php
+                    $categories = ["Health", "Education", "Environment"];
+                    foreach ($categories as $category) {
+                      $selected = ($category == $user['can_postin']) ? "selected" : ""; // Check if category matches database value
+                      echo "<option value='$category' $selected>$category</option>";
+                    }
+                    ?>
+                  </select>
+                </td>
+              </tr>
+            <?php endwhile ?>
+          </tbody>
+        </table>
+        <div class="row justify-content-center">
+          <button type="submit" class="btn btn-primary col-2">Save Changes</button>
+        </div>
+
+  </form>
 
 
-          <tr>
-            <td>2</td>
-            <td>Rajesh Chaudhary</td>
-            <td>raayz987@mail.com</td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Role</option>
-                <option value="1">System Manager</option>
-                <option value="2">Project Administrator</option>
-              </select>
-            </td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Category</option>
-                <option value="1">Health</option>
-                <option value="2">Education</option>
-                <option value="3">Environment</option>
-              </select>
-            </td>
-          </tr>
+  <!-- div for pagination -->
+  <!-- <div class="container-fluid">
 
-          <tr>
-            <td>3</td>
-            <td>Rajesh Chaudhary</td>
-            <td>raayz987@mail.com</td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Role</option>
-                <option value="1">System Manager</option>
-                <option value="2">Project Administrator</option>
-              </select>
-            </td>
-            <td>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose Category</option>
-                <option value="1">Health</option>
-                <option value="2">Education</option>
-                <option value="3">Environment</option>
-              </select>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-
-
-      <!-- div for pagination -->
-      <div class="container-fluid">
-
-        <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">&lt;</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item disabled">
-              <a class="page-link" href="#">&gt;</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">&lt;</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&gt;</a>
+        </li>
+      </ul>
+    </nav>
+  </div> -->
 
 </body>
 

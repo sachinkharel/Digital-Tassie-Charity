@@ -56,8 +56,8 @@ if (isset($_POST['submit'])) {
         die();
     } else {
         // Insert user into database
-        $insert_user_query = "INSERT INTO users (firstname, lastname, email, password, dateofbirth, avatar, is_admin) 
-        VALUES (?, ?, ?, ?, ?, ?, 0)";
+        $insert_user_query = "INSERT INTO users (firstname, lastname, email, password, dateofbirth, avatar, is_admin, can_postin) 
+        VALUES (?, ?, ?, ?, ?, ?, 0, 'Education')";
         $stmt = mysqli_prepare($connection, $insert_user_query);
         mysqli_stmt_bind_param($stmt, "ssssss", $firstname, $lastname, $email, $hashed_password, $dob, $avatar_name);
         mysqli_stmt_execute($stmt);
