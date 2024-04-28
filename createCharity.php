@@ -80,8 +80,8 @@ $category = $user_row['can_postin'];
                     </div>
                     <div class="mb-3">
                         <label for="goalAmount" class="form-label">Goal Amount</label>
-                        <input type="number" class="form-control" name="charityGoal" id="goalAmount" min="0" max="10000"
-                            required>
+                        <input type="number" placeholder="USD" class="form-control" name="charityGoal" id="goalAmount"
+                            min="0" max="10000" required>
                     </div>
                     <div class="mb-3">
                         <label for="charityimage" class="form-label">Charity Flyer</label>

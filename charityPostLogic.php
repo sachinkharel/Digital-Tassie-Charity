@@ -49,8 +49,8 @@ if (isset($_POST['submit'])) {
         $_SESSION["add-post-data"] = $_POST;
         header("location: " . ROOT_URL . 'createCharity.php');
     } else {
-        $insert_post = "INSERT INTO posts (name, `desc`, flyer, category, author_id, goalamt, is_featured) 
-        VALUES (?, ?, ?, ?, ?, ?, 0)";
+        $insert_post = "INSERT INTO posts (name, `desc`, flyer, category, author_id, goalamt, is_featured, progress) 
+        VALUES (?, ?, ?, ?, ?, ?, 0,0)";
         $stmt = mysqli_prepare($connection, $insert_post);
         mysqli_stmt_bind_param($stmt, "ssssss", $title, $body, $thumbnail_name, $category, $author_id, $goal);
         mysqli_stmt_execute($stmt);

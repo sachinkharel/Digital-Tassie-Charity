@@ -1,5 +1,10 @@
 <?php
 include ("partials/navbarLoggedin.php");
+
+$current_admin_id = $_SESSION['user-id'];
+$query = "SELECT * FROM posts WHERE author_id = $current_admin_id";
+$posts = mysqli_query($connection, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -47,115 +52,62 @@ include ("partials/navbarLoggedin.php");
         Charity</a>
     </div>
     <div class="row mt-3">
-      <table class="table table-bordered" id="managetable">
-        <tr>
-          <th>S.N.</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Goal Amount</th>
-          <th>Progress</th>
-          <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
+      <?php
+      if (isset($_SESSION["update-post"])) {
+        // Output the error message
+        echo "<div class='alert alert-success'>{$_SESSION["update-post"]}</div>";
+        // Remove the error message from the session to prevent it from being displayed again
+        unset($_SESSION["update-post"]);
+      }
+      ?>
+      <?php if (mysqli_num_rows($posts) > 0): ?>
+        <table class="table table-bordered" id="managetable">
           <tr>
-            <td>1</td>
-            <td>Charity for disable</td>
-            <td>Supporting indvidual with disablilities</td>
-            <td>Health</td>
-            <td>$5000</td>
-            <td>60%</td>
-            <td>
-              <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
-              <ul class="list-inline m-0">
-                <li class="list-inline-item">
-                  <button class="btn btn-light"><a href="createCharity.html"><i class="fa-solid fa-pen-to-square"
-                        style="font-size:12px;"></i><span> EDIT</span></a></button>
-                </li>
-
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateModal">
-                    <i class="fas fa-spinner" style="font-size:10px;"><span> Update</span></i>
-                  </button>
-
-                </li>
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i class="fa-solid fa-trash-can" style="font-size:12px;"><span> Delete</span></i>
-                  </button>
-
-                </li>
-              </ul>
-            </td>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Goal Amount</th>
+            <th>Progress</th>
+            <th>Action</th>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Charity for students</td>
-            <td>Supporting indvidual with disablilities</td>
-            <td>Health</td>
-            <td>$5000</td>
-            <td>90%</td>
-            <td>
-              <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
-              <ul class="list-inline m-0">
-                <li class="list-inline-item">
-                  <button class="btn btn-light"><a href="createCharity.html"><i class="fa-solid fa-pen-to-square"
-                        style="font-size:12px;"></i><span> EDIT</span></a></button>
-                </li>
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateModal">
-                    <i class="fas fa-spinner" style="font-size:10px;"><span> Update</span></i>
-                  </button>
+          </thead>
+          <tbody>
+            <?php while ($post = mysqli_fetch_assoc($posts)): ?>
+              <tr>
+                <td><?= "{$post['name']}" ?></td>
+                <td><?= "{$post['desc']}" ?></td>
+                <td><?= "{$post['category']}" ?></td>
+                <td>$<?= "{$post['goalamt']}" ?></td>
+                <td><?= "{$post['progress']}" ?>%</td>
+                <td>
+                  <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
+                  <div class="btn-group" role="group" aria-label="Action Buttons">
+                    <button type="button" onclick="window.location.href='updateCharity.php?post_id=<?= $post['id'] ?>'"
+                      class="btn btn-sm btn-secondary">
+                      <i class="fas fa-sync-alt"></i> Update
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal"
+                      data-bs-target="#deleteModal">
+                      <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
 
-                </li>
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i class="fa-solid fa-trash-can" style="font-size:12px;"><span> Delete</span></i>
-                  </button>
-                </li>
-              </ul>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Save tree</td>
-            <td>Planting trees</td>
-            <td>Health</td>
-            <td>$10000</td>
-            <td>40%</td>
-            <td>
-              <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
-              <ul class="list-inline m-0">
-                <li class="list-inline-item">
-                  <button class="btn btn-light"><a href="createCharity.html"><i class="fa-solid fa-pen-to-square"
-                        style="font-size:12px;"></i><span> EDIT</span></a></button>
-                </li>
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateModal">
-                    <i class="fas fa-spinner" style="font-size:10px;"><span> Update</span></i>
-                  </button>
-
-                </li>
-                <li class="list-inline-item">
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <i class="fa-solid fa-trash-can" style="font-size:12px;"><span> Delete</span></i>
-                  </button>
-
-                </li>
-              </ul>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
+              <?php endwhile ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <div class='alert alert-danger'>No posts found!</div>
+      <?php endif ?>
 
 
 
 
 
       <!-- Delete Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
