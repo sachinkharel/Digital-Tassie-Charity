@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
                     $_SESSION['signup'] = 'Error uploading file';
                 }
             } else {
-                $_SESSION['signup'] = 'File size too big! Upload < 1 mb';
+                $_SESSION['signup'] = 'File size too big! Upload < 2 mb';
             }
         } else {
             $_SESSION['signup'] = 'Upload jpeg, jpg or png!';
