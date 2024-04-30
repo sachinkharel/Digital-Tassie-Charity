@@ -1,5 +1,33 @@
 <?php
 include ("partials/navbar.php");
+
+if (isset($_GET['post_id'])) {
+    // Get the post ID from the URL parameter
+    $post_id = $_GET['post_id'];
+
+    // Fetch the charity details from the database using the post ID
+    $fetch_post_query = "SELECT * FROM posts WHERE id = '$post_id'";
+    $fetch_post_result = mysqli_query($connection, $fetch_post_query);
+
+    // Check if charity with the provided post ID exists
+    if (mysqli_num_rows($fetch_post_result) > 0) {
+        // Fetch charity details
+        $post_details = mysqli_fetch_assoc($fetch_post_result);
+    } else {
+        // Charity with the provided post ID not found or not authorized to update
+        // Redirect to manageCharity.php with an error message
+        $_SESSION["charity-page"] = "Charity not found";
+        header("Location: charityList.php");
+        exit(); // Stop further execution
+    }
+} else {
+    // Post ID not provided
+    // Redirect to manageCharity.php with an error message
+    $_SESSION["charity-page"] = "Post ID not provided.";
+    header("Location: manageCharity.php");
+    exit(); // Stop further execution
+}
+
 ?>
 
 
@@ -32,34 +60,37 @@ include ("partials/navbar.php");
     <!-- <div id="getnavbar"></div> -->
 
     <div class="container mt-5">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-6 text-center">
-                <h3>Project Name</h3>
-                <p id="charityName"></p>
-            </div>
-        </div>
 
         <div class="row justify-content-center mt-5">
             <div class="col-md-6 text-center">
-                <h3>Charity Category</h3>
-                <p id="charityCategory"></p>
+                <h3><?= $post_details['name'] ?></h3>
+                <!-- <p id="charityName"></p> -->
             </div>
         </div>
 
-        <div class="row justify-content-center mt-5">
+        <div class="row justify-content-center mt-4">
             <div class="col-md-6 text-center">
-                <h3>Progress</h3>
+                <h5><?= $post_details['category'] ?></h5>
+                <!-- <p id="charityCategory"></p> -->
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 text-center">
+                <p>Progress: <?= $post_details['progress'] ?>%</p>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-                        aria-valuemax="100" id="progressBar"></div>
+                    <div class="progress-bar" role="progressbar" style="width: <?= $post_details['progress'] ?>%;"
+                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progressBar"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center mt-5">
+        <div class="row justify-content-center mt-4">
             <div class="col-md-6 text-center">
-                <h3>Description</h3>
-                <p id="charityDescription"></p>
+                <p><?= $post_details['desc'] ?></p>
+                <!-- <p id="charityDescription"></p> -->
+                <img src="<?= ROOT_URL . 'images/' . $post_details['flyer'] ?>" alt="Charity Image" class="img-fluid">
+
             </div>
         </div>
     </div>
@@ -69,7 +100,7 @@ include ("partials/navbar.php");
 
     <!-- The below(commented code) was the first attempt but I thought it's better to pull it from cookie storage which 
         closely related to pulling from database as per the feeling hehe -->
-    <script>
+    <!-- <script>
         // var urlParams = new URLSearchParams(window.location.search);
         // var encodedData = urlParams.get('data');
         // var formData = JSON.parse(decodeURIComponent(encodedData));
@@ -89,7 +120,7 @@ include ("partials/navbar.php");
             progressBar.style.width = parseFloat(formData.goalAmount) + "%";
             progressBar.textContent = formData.goalAmount + "%";
         }
-    </script>
+    </script> -->
 
 </body>
 

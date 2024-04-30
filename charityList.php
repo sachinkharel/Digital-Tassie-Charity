@@ -49,11 +49,11 @@ $posts = mysqli_query($connection, $query);
             <div class="col-md-9">
                 <div class="input-group mb-3">
                     <input type="text" id="search-input" class="form-control" placeholder="Search...">
-                    <button class="btn btn-outline-secondary" type="button">Search</button>
+                    <!-- <button class="btn btn-outline-secondary" type="button">Search</button> -->
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <select id="category-filter" class="form-select">
                         <option value="all">All</option>
                         <option value="Health">Health</option>
@@ -70,6 +70,29 @@ $posts = mysqli_query($connection, $query);
         </div>
     </div>
 
+
+    <div class="modal fade" id="donateModal" tabindex="-1" aria-labelledby="donateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="donateModalLabel">Donate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="donateForm">
+                        <div class="mb-3">
+                            <label for="donationAmount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="donationAmount" name="donationAmount"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Donate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- We're using an array to store the data for the charity and dynamically list,
     in assignment 2 we'll pull the data from the database charity table and store it in the array 
     to then list it in this page. -->
@@ -85,6 +108,7 @@ $posts = mysqli_query($connection, $query);
             <?php if ($posts && mysqli_num_rows($posts) > 0): ?>
                 <?php while ($post = mysqli_fetch_assoc($posts)): ?>
                     charityList.push({
+                        id: '<?= $post['id'] ?>',
                         name: '<?= htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8') ?>',
                         category: '<?= htmlspecialchars($post['category'], ENT_QUOTES, 'UTF-8') ?>',
                         description: '<?= htmlspecialchars($post['desc'], ENT_QUOTES, 'UTF-8') ?>',
@@ -115,12 +139,22 @@ $posts = mysqli_query($connection, $query);
                         <div class="progress-bar" role="progressbar" style="width: ${charity.progress}%" aria-valuenow="${charity.progress}" aria-valuemin="0" aria-valuemax="100">${charity.progress}%</div>
                     `;
 
-                    const charityTitle = document.createElement("h5");
-                    charityTitle.classList.add("card-title");
-                    charityTitle.textContent = charity.name;
+                    const formattedCharityName = charity.name.replace(/\s+/g, "-");
 
-                    const chairtyCategory = document.createElement("p");
-                    chairtyCategory.classList.add("card-text");
+                    const charityLink = document.createElement("a");
+                    charityLink.href = "charityPage.php?post_id=" + charity.id;
+                    // encodeURIComponent(formattedCharityName);
+                    charityLink.textContent = charity.name;
+                    charityLink.style.textDecoration = "none";
+                    charityLink.style.color = "inherit";
+
+                    const charityTitle = document.createElement("h3");
+                    charityTitle.classList.add("card-title");
+                    charityTitle.appendChild(charityLink);
+
+
+                    const chairtyCategory = document.createElement("h5");
+                    chairtyCategory.classList.add("card-text", "text-center");
                     chairtyCategory.textContent = charity.category;
 
 
@@ -128,17 +162,31 @@ $posts = mysqli_query($connection, $query);
                     charityDescription.classList.add("card-text");
                     charityDescription.textContent = charity.description;
 
-                    const goalAmount = document.createElement("p");
-                    goalAmount.classList.add("card-text", "text-end", "font-weight-bold");
+                    const goalAmount = document.createElement("h6");
+                    goalAmount.classList.add("card-text", "text-end");
                     goalAmount.textContent = `Goal: $${charity.goal}`;
+
+                    const progress = document.createElement("h6");
+                    progress.classList.add("card-text", "text-end");
+                    progress.textContent = `Progress: ${charity.progress}%`;
+
+                    const donateButton = document.createElement("button");
+                    donateButton.classList.add("btn", "btn-primary", "float-end");
+                    donateButton.textContent = "Donate";
+
+                    donateButton.setAttribute("data-bs-toggle", "modal");
+                    donateButton.setAttribute("data-bs-target", "#donateModal");
+
 
                     // here we're putting all the nodes in the DOM tree of this page
 
                     cardBody.appendChild(charityTitle);
+                    cardBody.appendChild(progress);
                     cardBody.appendChild(progressBar);
                     cardBody.appendChild(chairtyCategory);
                     cardBody.appendChild(charityDescription);
                     cardBody.appendChild(goalAmount);
+                    cardBody.appendChild(donateButton);
                     charityDiv.appendChild(cardBody);
                     charityListContainer.appendChild(charityDiv);
                 });
@@ -165,6 +213,48 @@ $posts = mysqli_query($connection, $query);
             // Initial render
             renderCharityList(charityList);
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Handle form submission
+            const donateForm = document.getElementById("donateForm");
+            donateForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const donationAmount = document.getElementById("donationAmount").value;
+
+                // You can perform validation and additional processing here
+
+                // Send the donation amount to the server using AJAX
+                // Example AJAX request
+                /*
+                fetch('save_donation.php', {
+                  method: 'POST',
+                  body: JSON.stringify({ amount: donationAmount }),
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                  // Optionally, update UI or display success message
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  // Handle errors
+                });
+                */
+
+                // Close the modal after submitting the form
+                const modal = document.getElementById('donateModal');
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                modalInstance.hide();
+
+                // Reset the form
+                donateForm.reset();
+            });
+        });
+
     </script>
 </body>
 
