@@ -1,5 +1,9 @@
 <?php
 include ("partials/navbar.php");
+
+$current_admin_id = $_SESSION['user-id'];
+$query = "SELECT * FROM posts";
+$posts = mysqli_query($connection, $query);
 ?>
 
 
@@ -75,13 +79,21 @@ include ("partials/navbar.php");
 
             // storing the data in "charityList" array, in key-value format where "name" is the key and "Charity for Disable" is the value
 
-            const charityList = [
-                { name: "Charity For Health and Safety Awareness", category: "Health", description: "Committed to promoting health and safety awareness, our charity educates and empowers communities to prioritize well-being. Through workshops, campaigns, and outreach programs, we strive to create a culture of prevention and preparedness. Your support enables us to advocate for safer environments and healthier lifestyles, ensuring a brighter future for all", goal: 1000, progress: 50 },
-                { name: "Charity For Disable", category: "Education", description: "Supporting individuals with disabilities, our charity strives to create an inclusive society where everyone has equal opportunities. Through advocacy, education, and empowerment programs, we aim to enhance the quality of life for people with disabilities. Your contribution helps us provide essential services and promote disability rights, fostering a more accessible and supportive community.", goal: 1500, progress: 30 },
-                { name: "Charity For Environment", category: "Environment", description: "Green Earth Initiative is a charity dedicated to preserving and protecting our planet's natural resources. Our mission is to promote sustainability, biodiversity, and environmental conservation. Through tree-planting drives, waste reduction campaigns, and educational programs, we empower communities to adopt eco-friendly practices and mitigate the impact of climate change", goal: 2000, progress: 60 },
+            let charityList = [];
 
-            ];
-
+            // Fetch the data from PHP and construct the charityList array
+            <?php if ($posts && mysqli_num_rows($posts) > 0): ?>
+                <?php while ($post = mysqli_fetch_assoc($posts)): ?>
+                    charityList.push({
+                        name: '<?= htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8') ?>',
+                        category: '<?= htmlspecialchars($post['category'], ENT_QUOTES, 'UTF-8') ?>',
+                        description: '<?= htmlspecialchars($post['desc'], ENT_QUOTES, 'UTF-8') ?>',
+                        goal: '<?= htmlspecialchars($post['goalamt'], ENT_QUOTES, 'UTF-8') ?>',
+                        progress: '<?= htmlspecialchars($post['progress'], ENT_QUOTES, 'UTF-8') ?>'
+                    });
+                <?php endwhile ?>
+            <?php endif ?>
+            console.log(charityList);
             const categoryFilter = document.getElementById("category-filter");
             const searchInput = document.getElementById("search-input");
             const charityListContainer = document.getElementById("charity-list");
