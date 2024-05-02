@@ -67,10 +67,9 @@ if (isset($_SESSION['user-id'])) {
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img src="<?php echo ROOT_URL . "images/" . $avatar_path; ?>" alt="Guest" width="30" height="30"
+                <img src="<?= ROOT_URL . "images/" . $avatar_path; ?>" alt="Guest" width="30" height="30"
                   class="rounded-circle">
               </a>
-              <!-- <?php echo $avatar_path ?> -->
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><span class="dropdown-item-text d-block text-center">Welcome, DTC</span></li>
                 <li>

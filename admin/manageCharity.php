@@ -26,9 +26,10 @@ $posts = mysqli_query($connection, $query);
   integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
   </script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!--
 <script>
   $(function () {
     // Load navbar content using jQuery
@@ -73,7 +74,7 @@ $posts = mysqli_query($connection, $query);
           </thead>
           <tbody>
             <?php while ($post = mysqli_fetch_assoc($posts)): ?>
-              <tr>
+              <tr id="post_<?= $post['id']; ?>">
                 <td><?= "{$post['name']}" ?></td>
                 <td><?= "{$post['desc']}" ?></td>
                 <td><?= "{$post['category']}" ?></td>
@@ -87,7 +88,7 @@ $posts = mysqli_query($connection, $query);
                       <i class="fas fa-sync-alt"></i> Update
                     </button>
                     <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal"
-                      data-bs-target="#deleteModal">
+                      data-bs-target="#deleteModal" onclick="setPostId(<?= $post['id'] ?>)">
                       <i class="fas fa-trash-alt"></i> Delete
                     </button>
                   </div>
@@ -103,7 +104,36 @@ $posts = mysqli_query($connection, $query);
       <?php endif ?>
 
 
+      <script>
+        var postIdToDelete;
 
+        function setPostId(postId) {
+          postIdToDelete = postId;
+        }
+        function deletePost() {
+          $('#deleteModal').modal('hide');
+          $.ajax({
+            type: "POST",
+            url: "deletePost.php",
+            data: { post_id: postIdToDelete },
+            dataType: "json",
+            success: function (response) {
+              if (response.success) {
+                // Reload the page or update UI as needed
+                $("#post_" + postIdToDelete).remove();
+              } else {
+                alert("Failed to delete post: " + response.error);
+              }
+            },
+            error: function (xhr, status, error) {
+              var errorMessage = xhr.status + ': ' + xhr.statusText;
+              alert('Error - ' + errorMessage);
+              console.log('Response:', xhr.responseText); // Log the entire response
+              console.log('Error:', error);
+            }
+          });
+        }
+      </script>
 
 
       <!-- Delete Modal -->
@@ -120,8 +150,8 @@ $posts = mysqli_query($connection, $query);
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary" onclick="deletePost()">Yes</button>
+              <button type=" button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
 
             </div>
           </div>
@@ -171,6 +201,7 @@ $posts = mysqli_query($connection, $query);
         </div>
       </div>
     </div>
+
 
 
 </body>

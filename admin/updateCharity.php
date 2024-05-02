@@ -10,8 +10,18 @@ if (isset($_GET['post_id'])) {
     $post_id = $_GET['post_id'];
 
     // Fetch the charity details from the database using the post ID
-    $fetch_post_query = "SELECT * FROM posts WHERE id = '$post_id' AND author_id = '$current_admin_id'";
-    $fetch_post_result = mysqli_query($connection, $fetch_post_query);
+    $fetch_user_query = "SELECT is_admin from users WHERE id = '$current_admin_id'";
+    $fetch_user_result = mysqli_query($connection, $fetch_user_query);
+    $is_admin = $user_data['is_admin'];
+
+    if ($is_admin == 1) {
+        $fetch_post_query = "SELECT * FROM posts WHERE id = '$post_id'";
+        $fetch_post_result = mysqli_query($connection, $fetch_post_query);
+    } else {
+        $fetch_post_query = "SELECT * FROM posts WHERE id = '$post_id' AND author_id = '$current_admin_id'";
+        $fetch_post_result = mysqli_query($connection, $fetch_post_query);
+    }
+
 
     // Check if charity with the provided post ID exists
     if (mysqli_num_rows($fetch_post_result) > 0) {

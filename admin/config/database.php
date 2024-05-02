@@ -8,7 +8,7 @@ $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($connection->connect_errno) {
     die('DATABASE CONNECTION ERROR: ' . $connection->connect_error);
 } else {
-    echo 'Connected successfully!';
+    // echo 'Connected successfully!';
 }
 
 // Optionally, you can set the character set to utf8mb4 for better Unicode support

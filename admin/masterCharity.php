@@ -1,13 +1,18 @@
 <?php
 include ("partials/navbarLoggedin.php");
+
+$current_admin_id = $_SESSION['user-id'];
+$query = "SELECT * FROM posts";
+$posts = mysqli_query($connection, $query);
+
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Master Charity</title>
-    <link rel="stylesheet" type="text/css" href=".<?= ROOT_URL ?>css/styles.css">
+    <title>Manage Charity</title>
+    <link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384- GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -20,143 +25,121 @@ include ("partials/navbarLoggedin.php");
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
-<!-- 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+<!--
 <script>
-    $(function () {
-        // Load navbar content using jQuery
-        $("#getnavbar").load("./partials/navbarLoggedin.php");
-    });
+  $(function () {
+    // Load navbar content using jQuery
+    $("#getnavbar").load("./partials/navbarLoggedin.php");
+  });
 </script> -->
 
 <body>
     <!-- <div id="getnavbar"></div> -->
     <div class="homepageHeader">
         <h1>Master Charity</h1>
-        <p>Edit or delete the charity details(This page is only available for System Administrator)</p>
     </div>
 
-    <!-- Using bootstrap table to list ALL the charity from ALL the categories, this page this only available for System Administrator who can edit every charity in the site -->
-    <!-- In this page we'll fetch all the data from charity table and list it, in assignment 2 -->
+    <!-- Using bootstrap table to list only the charity from one the category which user is assigned to,
+           this page this only available for Project Administrator who can edit charity from their assigned category  -->
+    <!-- In this page we'll fetch only the data from charity table checking the category assigned to the user and list it, in assignment 2 -->
 
     <div class="container col-9">
         <div class="col-12" style="text-align:right;">
-            <a href="<?= ROOT_URL ?>createCharity.php" class="btn btn-primary btn-sm active" role="button"
-                aria-pressed="true">Create
-                New Charity</a>
-            <a href="<?= ROOT_URL ?>admin/userDetails.php" class="btn btn-primary btn-sm active" role="button"
-                aria-pressed="true">Edit User
-                Role</a>
+            <a href="../createCharity.php" class="btn btn-primary btn-sm active" role="button"
+                aria-pressed="true">Create New
+                Charity</a>
         </div>
         <div class="row mt-3">
-            <table class="table table-bordered" id="managetable">
-                <tr>
-                    <th>S.N.</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Goal Amount</th>
-                    <th>Progress</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
+            <?php
+            if (isset($_SESSION["update-post"])) {
+                // Output the error message
+                echo "<div class='alert alert-success'>{$_SESSION["update-post"]}</div>";
+                // Remove the error message from the session to prevent it from being displayed again
+                unset($_SESSION["update-post"]);
+            }
+            ?>
+            <?php if (mysqli_num_rows($posts) > 0): ?>
+                <table class="table table-bordered" id="managetable">
                     <tr>
-                        <td>1</td>
-                        <td>Charity for disable</td>
-                        <td>Supporting indvidual with disablilities</td>
-                        <td>Health</td>
-                        <td>$5000</td>
-                        <td>60%</td>
-                        <td>
-                            <!-- Call to action buttons -->
-                            <ul class="list-inline m-0">
-                                <li class="list-inline-item">
-                                    <button class="btn btn-light"><a href="createCharity.html"><i
-                                                class="fa-solid fa-pen-to-square" style="font-size:12px;"></i><span
-                                                style="margin-left: 8px;">EDIT</span></a></button>
-                                </li>
-                                <li class="list-inline-item">
-                                    <!-- <button class="btn btn-light"> <i class="fa-solid fa-trash-can"style="font-size:12px;">DELETE</i></button> -->
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        <i class="fa-solid fa-trash-can" style="font-size:12px;"><span
-                                                style="margin-left: 8px;">Delete</span></i>
-                                    </button>
-
-                                </li>
-                            </ul>
-                        </td>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Goal Amount</th>
+                        <th>Progress</th>
+                        <th>Action</th>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Charity for students</td>
-                        <td>Supporting indvidual with disablilities</td>
-                        <td>Education</td>
-                        <td>$5000</td>
-                        <td>90%</td>
-                        <td>
-                            <!-- Call to action buttons -->
-                            <ul class="list-inline m-0">
-                                <li class="list-inline-item">
-                                    <button class="btn btn-light"><a href="createCharity.html"><i
-                                                class="fa-solid fa-pen-to-square" style="font-size:12px;"></i><span
-                                                style="margin-left: 8px;">EDIT</span></a></button>
-                                </li>
-                                <li class="list-inline-item">
-                                    <!-- <button class="btn btn-light"> <i class="fa-solid fa-trash-can"style="font-size:12px;">DELETE</i></button> -->
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        <i class="fa-solid fa-trash-can" style="font-size:12px;"><span
-                                                style="margin-left:8px;">Delete</span></i>
-                                    </button>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Save tree</td>
-                        <td>Planting trees</td>
-                        <td>Environment</td>
-                        <td>$10000</td>
-                        <td>40%</td>
-                        <td>
-                            <!-- Call to action buttons -->
-                            <ul class="list-inline m-0">
-                                <li class="list-inline-item">
-                                    <button class="btn btn-light"><a href="createCharity.html"><i
-                                                class="fa-solid fa-pen-to-square" style="font-size:12px;"></i><span
-                                                style="margin-left: 8px;">EDIT</span></a></button>
-                                </li>
-                                <li class="list-inline-item">
-                                    <!-- <button class="btn btn-light"> <i class="fa-solid fa-trash-can"style="font-size:12px;">DELETE</i></button> -->
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        <i class="fa-solid fa-trash-can" style="font-size:12px;"><span
-                                                style="margin-left: 8px;">Delete</span></i>
-                                    </button>
+                    </thead>
+                    <tbody>
+                        <?php while ($post = mysqli_fetch_assoc($posts)): ?>
+                            <tr id="post_<?= $post['id']; ?>">
+                                <td><?= "{$post['name']}" ?></td>
+                                <td><?= "{$post['desc']}" ?></td>
+                                <td><?= "{$post['category']}" ?></td>
+                                <td>$<?= "{$post['goalamt']}" ?></td>
+                                <td><?= "{$post['progress']}" ?>%</td>
+                                <td>
+                                    <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
+                                    <div class="btn-group" role="group" aria-label="Action Buttons">
+                                        <button type="button"
+                                            onclick="window.location.href='updateCharity.php?post_id=<?= $post['id'] ?>'"
+                                            class="btn btn-sm btn-secondary">
+                                            <i class="fas fa-sync-alt"></i> Update
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal" onclick="setPostId(<?= $post['id'] ?>)">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
 
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
+                            <?php endwhile ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class='alert alert-danger'>No posts found!</div>
+            <?php endif ?>
 
 
+            <script>
+                var postIdToDelete;
+
+                function setPostId(postId) {
+                    postIdToDelete = postId;
+                }
+                function deletePost() {
+                    $('#deleteModal').modal('hide');
+                    $.ajax({
+                        type: "POST",
+                        url: "deletePost.php",
+                        data: { post_id: postIdToDelete },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                                // Reload the page or update UI as needed
+                                $("#post_" + postIdToDelete).remove();
+                            } else {
+                                alert("Failed to delete post: " + response.error);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var errorMessage = xhr.status + ': ' + xhr.statusText;
+                            alert('Error - ' + errorMessage);
+                            console.log('Response:', xhr.responseText); // Log the entire response
+                            console.log('Error:', error);
+                        }
+                    });
+                }
+            </script>
 
 
-            <!-- Button trigger modal -->
-            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
-</button> -->
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -170,8 +153,8 @@ include ("partials/navbarLoggedin.php");
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-primary" onclick="deletePost()">Yes</button>
+                            <button type=" button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
 
                         </div>
                     </div>
@@ -193,6 +176,36 @@ include ("partials/navbarLoggedin.php");
                     </ul>
                 </nav>
             </div>
+
+
+
+            <!-- Update modal -->
+            <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myModalLabel">Update Progress</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form>
+                                <div class="mb-3">
+                                    <label for="progress" class="form-label">Enter Progress Percentage</label>
+                                    <input type="number" class="form-control" id="progress" min="0" max="100" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
 </body>
 
