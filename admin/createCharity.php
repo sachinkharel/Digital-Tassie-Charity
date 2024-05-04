@@ -1,5 +1,5 @@
 <?php
-include ("partials/navbar.php");
+include ("partials/navbarLoggedin.php");
 
 $current_admin_id = $_SESSION['user-id'];
 

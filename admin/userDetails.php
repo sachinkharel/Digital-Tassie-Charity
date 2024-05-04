@@ -49,6 +49,14 @@ $users = mysqli_query($connection, $query);
   <!-- In this page we'll fetch all the data from user table and list it, in assignment 2 -->
   <form method="post" action="updateUsers.php">
     <div class="container col-9 ">
+      <?php
+      if (isset($_SESSION["update-user-error"])) {
+        // Output the error message
+        echo "<div class='alert alert-danger'>{$_SESSION["update-user-error"]}</div>";
+        // Remove the error message from the session to prevent it from being displayed again
+        unset($_SESSION["update-user-error"]);
+      }
+      ?>
       <div class="row">
         <table class="table table-bordered " id="managetable">
           <thead>

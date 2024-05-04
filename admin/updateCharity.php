@@ -12,7 +12,8 @@ if (isset($_GET['post_id'])) {
     // Fetch the charity details from the database using the post ID
     $fetch_user_query = "SELECT is_admin from users WHERE id = '$current_admin_id'";
     $fetch_user_result = mysqli_query($connection, $fetch_user_query);
-    $is_admin = $user_data['is_admin'];
+    $user_details = mysqli_fetch_assoc($fetch_user_result);
+    $is_admin = $user_details['is_admin'];
 
     if ($is_admin == 1) {
         $fetch_post_query = "SELECT * FROM posts WHERE id = '$post_id'";

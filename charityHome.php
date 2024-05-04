@@ -54,7 +54,7 @@ include ("partials/navbar.php");
     <h1>Digital Tassie Charity</h1>
     <p>
       You can create your own Charity in this platform. Feel free to
-      <a target="_blank" href="<?= ROOT_URL ?>createCharity.php">create charity</a>.
+      <a target="_blank" href="<?= ROOT_URL ?>admin/createCharity.php">create charity</a>.
     </p>
   </div>
 

@@ -20,6 +20,8 @@ if (isset($_POST['submit'])) {
 
             if ($user_record["is_admin"] == 1) {
                 $_SESSION["user_is_admin"] = true;
+            } else if ($user_record["is_admin"] == 0) {
+                $_SESSION["user_is_admin"] = false;
             }
             header('location:' . ROOT_URL . 'charityHome.php');
         } else {

@@ -50,7 +50,7 @@ if (isset($_SESSION['user-id'])) {
             <li class="nav-item">
               <a class="nav-link" href="<?= ROOT_URL ?>admin/manageCharity.php">Manage Charity</a>
             </li>
-            <?php if (isset($_SESSION['user_is_admin'])) { ?>
+            <?php if (($_SESSION['user_is_admin'])) { ?>
               <li class="nav-item">
                 <a class="nav-link" href="<?= ROOT_URL ?>admin/masterCharity.php">Master Charity</a>
               </li>

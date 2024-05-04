@@ -49,8 +49,8 @@ $posts = mysqli_query($connection, $query);
 
     <div class="container col-9">
         <div class="col-12" style="text-align:right;">
-            <a href="../createCharity.php" class="btn btn-primary btn-sm active" role="button"
-                aria-pressed="true">Create New
+            <a href="createCharity.php" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Create
+                New
                 Charity</a>
         </div>
         <div class="row mt-3">

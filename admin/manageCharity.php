@@ -49,14 +49,14 @@ $posts = mysqli_query($connection, $query);
 
   <div class="container col-9">
     <div class="col-12" style="text-align:right;">
-      <a href="../createCharity.php" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Create New
+      <a href="createCharity.php" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Create New
         Charity</a>
     </div>
     <div class="row mt-3">
       <?php
       if (isset($_SESSION["update-post"])) {
         // Output the error message
-        echo "<div class='alert alert-success'>{$_SESSION["update-post"]}</div>";
+        echo "<div class='alert alert-danger'>{$_SESSION["update-post"]}</div>";
         // Remove the error message from the session to prevent it from being displayed again
         unset($_SESSION["update-post"]);
       }
