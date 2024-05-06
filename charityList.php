@@ -1,5 +1,7 @@
 <?php
 include ("partials/navbar.php");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $current_admin_id = $_SESSION['user-id'];
 $query = "SELECT * FROM posts";
@@ -173,6 +175,7 @@ $posts = mysqli_query($connection, $query);
                     const donateButton = document.createElement("button");
                     donateButton.classList.add("btn", "btn-primary", "float-end");
                     donateButton.textContent = "Donate";
+                    donateButton.setAttribute('postId', `${charity.id}`);
 
                     donateButton.setAttribute("data-bs-toggle", "modal");
                     donateButton.setAttribute("data-bs-target", "#donateModal");
@@ -215,35 +218,53 @@ $posts = mysqli_query($connection, $query);
         });
 
         document.addEventListener("DOMContentLoaded", function () {
-            // Handle form submission
+            // Handle donation submission
             const donateForm = document.getElementById("donateForm");
             donateForm.addEventListener("submit", function (event) {
                 event.preventDefault(); // Prevent default form submission
 
                 const donationAmount = document.getElementById("donationAmount").value;
+                const donateButton = document.querySelector('[postId]');
+                if (donateButton) {
+                    const postId = donateButton.getAttribute('postId');
 
-                // You can perform validation and additional processing here
+                    fetch('admin/saveDonation.php', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            amount: donationAmount,
+                            postId: postId
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // If the response indicates success, redirect to charityList.php
+                                window.location.href = 'admin/saveDonation.php';
+                            } else {
+                                // If the response is not successful, handle it as JSON data
+                                return response.json();
+                            }
+                        })
+                        .then(data => {
+                            // Check if the response contains an error message
+                            if (data && data.error) {
+                                // Log the error message
+                                console.error('Error:', data.error);
+                            } else {
+                                // Handle other response data (if needed)
+                            }
+                        })
+                        .catch(error => {
+                            // Handle network errors or other exceptions
+                            console.error('Error:', error);
+                        });
 
-                // Send the donation amount to the server using AJAX
-                // Example AJAX request
-                /*
-                fetch('save_donation.php', {
-                  method: 'POST',
-                  body: JSON.stringify({ amount: donationAmount }),
-                  headers: {
-                    'Content-Type': 'application/json'
-                  }
-                })
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data);
-                  // Optionally, update UI or display success message
-                })
-                .catch(error => {
-                  console.error('Error:', error);
-                  // Handle errors
-                });
-                */
+                } else {
+                    console.error('Error: Button with postId attribute not found');
+
+                }
 
                 // Close the modal after submitting the form
                 const modal = document.getElementById('donateModal');
