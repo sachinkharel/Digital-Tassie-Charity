@@ -88,6 +88,9 @@ $posts = mysqli_query($connection, $query);
                             <label for="donationAmount" class="form-label">Amount</label>
                             <input type="number" class="form-control" id="donationAmount" name="donationAmount"
                                 required>
+                            <input type="hidden" id="donatePostId" name="donatePostId">
+                            <input type="hidden" id="donateGoal" name="donateGoal">
+                            <input type="hidden" id="donateTotalDonation" name="donateTotalDonation">
                         </div>
                         <button type="submit" class="btn btn-primary">Donate</button>
                     </form>
@@ -172,8 +175,7 @@ $posts = mysqli_query($connection, $query);
                     const goalAmount = document.createElement("h6");
                     goalAmount.classList.add("card-text", "text-end", "get-donation");
                     goalAmount.textContent = `Goal: $${charity.goal}`;
-                    goalAmount.setAttribute('data-goal-amount', charity.goal);
-                    goalAmount.setAttribute('data-total-donation', charity.totaldonation);
+
 
                     const progress = document.createElement("h6");
                     progress.classList.add("card-text", "text-end");
@@ -183,6 +185,9 @@ $posts = mysqli_query($connection, $query);
                     donateButton.classList.add("btn", "btn-primary", "donate-btn", "float-end");
                     donateButton.textContent = "Donate";
                     donateButton.setAttribute('data-post-id', charity.id);
+                    donateButton.setAttribute('data-goal-amount', charity.goal);
+                    donateButton.setAttribute('data-total-donation', charity.totaldonation);
+                    donateButton.id = `donateBtn_${charity.id}`;
 
                     donateButton.setAttribute("data-bs-toggle", "modal");
                     donateButton.setAttribute("data-bs-target", "#donateModal");
@@ -228,61 +233,67 @@ $posts = mysqli_query($connection, $query);
         document.addEventListener("DOMContentLoaded", function () {
             // Handle donation submission
             const donateForm = document.getElementById("donateForm");
+            // Event listener for donate button click
+            document.querySelectorAll('.donate-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    updateDonationValues(this);
+                });
+            });
+            function updateDonationValues(donateButton) {
+                const postId = donateButton.getAttribute('data-post-id');
+                const goal = donateButton.getAttribute('data-goal-amount');
+                const totaldonation = donateButton.getAttribute('data-total-donation');
+
+                document.getElementById("donatePostId").value = postId;
+                document.getElementById("donateGoal").value = goal;
+                document.getElementById("donateTotalDonation").value = totaldonation;
+
+                // console.log(document.getElementById("donateTotalDonation").value)
+            }
+
             donateForm.addEventListener("submit", function (event) {
                 event.preventDefault(); // Prevent default form submission
 
                 const donationAmount = document.getElementById("donationAmount").value;
 
-                const getDonation = document.querySelector('.get-donation');
+                // Function to update donation values based on the clicked donate button
 
-                const goal = getDonation.getAttribute('data-goal-amount');
-                const totaldonation = getDonation.getAttribute('data-total-donation');
+                fetch('admin/saveDonation.php', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        amount: donationAmount,
+                        postId: document.getElementById("donatePostId").value,
+                        goalAmount: document.getElementById("donateGoal").value,
+                        totaldonation: document.getElementById("donateTotalDonation").value
+                    }),
 
-                // Retrieve the post ID from the clicked donate button
-                const donateButton = document.querySelector('.donate-btn');
-                if (donateButton) {
-                    const postId = donateButton.getAttribute('data-post-id');
-
-                    fetch('admin/saveDonation.php', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            amount: donationAmount,
-                            postId: postId,
-                            goalAmount: goal,
-                            totaldonation: totaldonation
-                        }),
-
-                        headers: {
-                            'Content-Type': 'application/json'
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // If the response indicates success, redirect to charityList.php
+                            window.location.href = 'charityList.php';
+                        } else {
+                            // If the response is not successful, handle it as JSON data
+                            return response.json();
                         }
                     })
-                        .then(response => {
-                            if (response.ok) {
-                                // If the response indicates success, redirect to charityList.php
-                                window.location.href = 'charityList.php';
-                            } else {
-                                // If the response is not successful, handle it as JSON data
-                                return response.json();
-                            }
-                        })
-                        .then(data => {
-                            // Check if the response contains an error message
-                            if (data && data.error) {
-                                // Log the error message
-                                console.error('Error:', data.error);
-                            } else {
-                                // Handle other response data (if needed)
-                            }
-                        })
-                        .catch(error => {
-                            // Handle network errors or other exceptions
-                            console.error('Error:', error);
-                        });
+                    .then(data => {
+                        // Check if the response contains an error message
+                        if (data && data.error) {
+                            // Log the error message
+                            console.error('Error:', data.error);
+                        } else {
+                            // Handle other response data (if needed)
+                        }
+                    })
+                    .catch(error => {
+                        // Handle network errors or other exceptions
+                        console.error('Error:', error);
+                    });
 
-                } else {
-                    console.error('Error: Button with postId attribute not found');
-
-                }
 
                 // Close the modal after submitting the form
                 const modal = document.getElementById('donateModal');
