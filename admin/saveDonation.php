@@ -24,14 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $goalAmount = $data['goalAmount'];
     $totalDonation = $data['totaldonation'];
     $updateDonation = $totalDonation + $amount;
-    $updateProgress = ($updateDonation / $goalAmount) * 100;
 
 
     try {
         // Perform the donation insertion into the database
         // Perform the donation insertion into the database
         $insert_donation = "INSERT INTO donation (amt, donated_by, donated_to) VALUES (?, ?, ?)";
-        $update_progress = "UPDATE posts SET progress = '$updateProgress', totalDonation = '$updateDonation' WHERE id = $postId";
+        $update_progress = "UPDATE posts SET totalDonation = '$updateDonation' WHERE id = $postId";
         $stmt = mysqli_prepare($connection, $insert_donation);
         $stmt1 = mysqli_prepare($connection, $update_progress);
         mysqli_stmt_bind_param($stmt, "sss", $amount, $donated_by, $postId); // Corrected to "sss"

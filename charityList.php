@@ -115,10 +115,11 @@ $posts = mysqli_query($connection, $query);
                         id: '<?= $post['id'] ?>',
                         name: '<?= htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8') ?>',
                         category: '<?= htmlspecialchars($post['category'], ENT_QUOTES, 'UTF-8') ?>',
-                        description: '<?= htmlspecialchars($post['desc'], ENT_QUOTES, 'UTF-8') ?>',
+                        description: <?= json_encode($post['desc']) ?>,
                         goal: '<?= htmlspecialchars($post['goalamt'], ENT_QUOTES, 'UTF-8') ?>',
-                        progress: '<?= htmlspecialchars($post['progress'], ENT_QUOTES, 'UTF-8') ?>',
+                        // progress: ( <?= $post['totaldonation'] ?> / <?= $post['goalamt'] ?>) * 100
                         totaldonation: '<?= htmlspecialchars($post['totaldonation'], ENT_QUOTES, 'UTF-8') ?>',
+                        progress: ((<?= $post['totaldonation'] ?> / <?= $post['goalamt'] ?>) * 100).toFixed(1)
 
                     });
                 <?php endwhile ?>
@@ -176,7 +177,7 @@ $posts = mysqli_query($connection, $query);
 
                     const progress = document.createElement("h6");
                     progress.classList.add("card-text", "text-end");
-                    progress.textContent = `Progress: ${charity.progress}%`;
+                    progress.textContent = `Total Donation: $${charity.totaldonation}`;
 
                     const donateButton = document.createElement("button");
                     donateButton.classList.add("btn", "btn-primary", "donate-btn", "float-end");

@@ -56,7 +56,7 @@ $posts = mysqli_query($connection, $query);
       <?php
       if (isset($_SESSION["update-post"])) {
         // Output the error message
-        echo "<div class='alert alert-danger'>{$_SESSION["update-post"]}</div>";
+        echo "<div class='alert alert-success'>{$_SESSION["update-post"]}</div>";
         // Remove the error message from the session to prevent it from being displayed again
         unset($_SESSION["update-post"]);
       }
@@ -68,7 +68,7 @@ $posts = mysqli_query($connection, $query);
             <th>Description</th>
             <th>Category</th>
             <th>Goal Amount</th>
-            <th>Progress</th>
+            <th>Total Donation</th>
             <th>Action</th>
           </tr>
           </thead>
@@ -79,7 +79,7 @@ $posts = mysqli_query($connection, $query);
                 <td><?= "{$post['desc']}" ?></td>
                 <td><?= "{$post['category']}" ?></td>
                 <td>$<?= "{$post['goalamt']}" ?></td>
-                <td><?= "{$post['progress']}" ?>%</td>
+                <td>$<?= "{$post['totaldonation']}" ?></td>
                 <td>
                   <!-- Buttons for EDIT UPDATE and DELETE the charity  -->
                   <div class="btn-group" role="group" aria-label="Action Buttons">

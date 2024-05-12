@@ -135,7 +135,7 @@ if (isset($_POST['submit'])) {
     $charityGoal = $_POST['charityGoal'];
 
     // Check if a new image file has been uploaded
-    if ($_FILES['charityImage']['error'] === UPLOAD_ERR_OK) {
+    if ($_FILES['charityImage']['error']['name'] === UPLOAD_ERR_OK) {
         // Delete the previous image file
         $previous_image_path = '../images/' . $post_details['flyer'];
         if (file_exists($previous_image_path)) {
@@ -156,6 +156,15 @@ if (isset($_POST['submit'])) {
                 // Move uploaded file to destination
                 if (move_uploaded_file($thumbnail_tmp_name, $thumbnail_destination_path)) {
                     // File upload successful, proceed to update charity details in the database
+// Update charity details in the database using the provided post ID
+                    $update_query = "UPDATE posts SET name = ?, `desc` = ?, goalamt = ?, flyer = ? WHERE id = ?";
+                    $stmt = mysqli_prepare($connection, $update_query);
+
+                    // Bind parameters to the prepared statement
+                    mysqli_stmt_bind_param($stmt, "ssiss", $charityName, $charityDesc, $charityGoal, $thumbnail_name, $post_id);
+
+                    // Execute the statement
+                    $update_result = mysqli_stmt_execute($stmt);
                 } else {
                     $_SESSION['update-post'] = 'Error uploading file' . $_FILES['charityImage']['error'];
                     header("Location: updateCharity.php?post_id=$post_id");
@@ -171,11 +180,20 @@ if (isset($_POST['submit'])) {
             header("Location: updateCharity.php?post_id=$post_id");
             exit(); // Stop further execution
         }
+
+    } else {
+        // Update charity details in the database using the provided post ID
+        $update_query = "UPDATE posts SET name = ?, `desc` = ?, goalamt = ? WHERE id = ?";
+        $stmt = mysqli_prepare($connection, $update_query);
+
+        // Bind parameters to the prepared statement
+        mysqli_stmt_bind_param($stmt, "sssi", $charityName, $charityDesc, $charityGoal, $post_id);
+
+        // Execute the statement
+        $update_result = mysqli_stmt_execute($stmt);
     }
 
-    // Update charity details in the database using the provided post ID
-    $update_query = "UPDATE posts SET name = '$charityName', `desc` = '$charityDesc', goalamt = '$charityGoal', flyer = '$thumbnail_name' WHERE id = '$post_id'";
-    $update_result = mysqli_query($connection, $update_query);
+
 
     if ($update_result) {
         // Update successful

@@ -53,7 +53,7 @@ $category = $user_row['can_postin'];
     <div class="container">
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <form id="charityForm" action="<?= ROOT_URL ?>charityPostLogic.php" enctype="multipart/form-data"
+                <form id="charityForm" action="<?= ROOT_URL ?>admin/charityPostLogic.php" enctype="multipart/form-data"
                     method="post">
                     <?php
                     if (isset($_SESSION["add-post"])) {
@@ -74,8 +74,8 @@ $category = $user_row['can_postin'];
                     </div>
                     <div class="mb-3">
                         <label for="charityCategory" class="form-label">Charity Category</label>
-                        <div class="form-control" name="chairtyCategory" id="charityCategory"><?php echo $category; ?>
-                            <input type="hidden" name="chairtyCategory" value="<?= $category ?>">
+                        <div class="form-control"><?php echo $category; ?>
+                            <input type="hidden" id="charityCategory" name="chairtyCat" value="<?= $category ?>">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -84,8 +84,8 @@ $category = $user_row['can_postin'];
                             min="0" max="10000" required>
                     </div>
                     <div class="mb-3">
-                        <label for="charityimage" class="form-label">Charity Flyer</label>
-                        <input type="file" id="charityimage" name="charityImage" class="form-control" required>
+                        <label for="charityImage" class="form-label">Charity Flyer</label>
+                        <input type="file" id="charityImage" name="charityImg" class="form-control" required>
                     </div>
                     <button type="submit" name="submit" class="btn btn-primary">Submit</button>
                 </form>
