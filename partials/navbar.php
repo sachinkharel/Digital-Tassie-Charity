@@ -57,7 +57,7 @@ if (isset($_SESSION['user-id'])) {
             <?php } ?>
           <?php } else { ?>
             <li class="nav-item">
-              <a class="nav-link" href="<?= ROOT_URL ?>createCharity.php">Create Charity</a>
+              <a class="nav-link" href="<?= ROOT_URL ?>admin/createCharity.php">Create Charity</a>
             </li>
           <?php } ?>
         </ul>

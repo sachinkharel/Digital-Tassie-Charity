@@ -5,6 +5,8 @@ ini_set('display_errors', 1);
 
 $current_admin_id = $_SESSION['user-id'];
 $query = "SELECT * FROM posts";
+$donations = "SELECT * FROM donations";
+$get_donations = mysqli_query($connection, $query);
 $posts = mysqli_query($connection, $query);
 ?>
 
@@ -115,7 +117,9 @@ $posts = mysqli_query($connection, $query);
                         category: '<?= htmlspecialchars($post['category'], ENT_QUOTES, 'UTF-8') ?>',
                         description: '<?= htmlspecialchars($post['desc'], ENT_QUOTES, 'UTF-8') ?>',
                         goal: '<?= htmlspecialchars($post['goalamt'], ENT_QUOTES, 'UTF-8') ?>',
-                        progress: '<?= htmlspecialchars($post['progress'], ENT_QUOTES, 'UTF-8') ?>'
+                        progress: '<?= htmlspecialchars($post['progress'], ENT_QUOTES, 'UTF-8') ?>',
+                        totaldonation: '<?= htmlspecialchars($post['totaldonation'], ENT_QUOTES, 'UTF-8') ?>',
+
                     });
                 <?php endwhile ?>
             <?php endif ?>
@@ -165,17 +169,19 @@ $posts = mysqli_query($connection, $query);
                     charityDescription.textContent = charity.description;
 
                     const goalAmount = document.createElement("h6");
-                    goalAmount.classList.add("card-text", "text-end");
+                    goalAmount.classList.add("card-text", "text-end", "get-donation");
                     goalAmount.textContent = `Goal: $${charity.goal}`;
+                    goalAmount.setAttribute('data-goal-amount', charity.goal);
+                    goalAmount.setAttribute('data-total-donation', charity.totaldonation);
 
                     const progress = document.createElement("h6");
                     progress.classList.add("card-text", "text-end");
                     progress.textContent = `Progress: ${charity.progress}%`;
 
                     const donateButton = document.createElement("button");
-                    donateButton.classList.add("btn", "btn-primary", "float-end");
+                    donateButton.classList.add("btn", "btn-primary", "donate-btn", "float-end");
                     donateButton.textContent = "Donate";
-                    donateButton.setAttribute('postId', `${charity.id}`);
+                    donateButton.setAttribute('data-post-id', charity.id);
 
                     donateButton.setAttribute("data-bs-toggle", "modal");
                     donateButton.setAttribute("data-bs-target", "#donateModal");
@@ -192,9 +198,10 @@ $posts = mysqli_query($connection, $query);
                     cardBody.appendChild(donateButton);
                     charityDiv.appendChild(cardBody);
                     charityListContainer.appendChild(charityDiv);
+
+
                 });
             }
-
             // using this function we're showing the results according to search and filter
 
             function filterCharities() {
@@ -224,16 +231,26 @@ $posts = mysqli_query($connection, $query);
                 event.preventDefault(); // Prevent default form submission
 
                 const donationAmount = document.getElementById("donationAmount").value;
-                const donateButton = document.querySelector('[postId]');
+
+                const getDonation = document.querySelector('.get-donation');
+
+                const goal = getDonation.getAttribute('data-goal-amount');
+                const totaldonation = getDonation.getAttribute('data-total-donation');
+
+                // Retrieve the post ID from the clicked donate button
+                const donateButton = document.querySelector('.donate-btn');
                 if (donateButton) {
-                    const postId = donateButton.getAttribute('postId');
+                    const postId = donateButton.getAttribute('data-post-id');
 
                     fetch('admin/saveDonation.php', {
                         method: 'POST',
                         body: JSON.stringify({
                             amount: donationAmount,
-                            postId: postId
+                            postId: postId,
+                            goalAmount: goal,
+                            totaldonation: totaldonation
                         }),
+
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -241,7 +258,7 @@ $posts = mysqli_query($connection, $query);
                         .then(response => {
                             if (response.ok) {
                                 // If the response indicates success, redirect to charityList.php
-                                window.location.href = 'admin/saveDonation.php';
+                                window.location.href = 'charityList.php';
                             } else {
                                 // If the response is not successful, handle it as JSON data
                                 return response.json();
