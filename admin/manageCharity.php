@@ -41,6 +41,7 @@ $posts = mysqli_query($connection, $query);
   <!-- <div id="getnavbar"></div> -->
   <div class="homepageHeader">
     <h1>Manage Charity</h1>
+    <p>List of all the charities created by you.</p>
   </div>
 
   <!-- Using bootstrap table to list only the charity from one the category which user is assigned to,

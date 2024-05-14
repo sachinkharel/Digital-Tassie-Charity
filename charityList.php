@@ -3,7 +3,14 @@ include ("partials/navbar.php");
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$current_admin_id = $_SESSION['user-id'];
+if (isset($_SESSION['user-id'])) {
+    $current_admin_id = $_SESSION['user-id'];
+    echo $current_admin_id;
+} else {
+    $current_admin_id = false;
+    echo $current_admin_id;
+}
+
 $query = "SELECT * FROM posts";
 $donations = "SELECT * FROM donations";
 $get_donations = mysqli_query($connection, $query);
@@ -181,17 +188,32 @@ $posts = mysqli_query($connection, $query);
                     progress.classList.add("card-text", "text-end");
                     progress.textContent = `Total Donation: $${charity.totaldonation}`;
 
+
+                    // const Error = document.createElement("p");
+
                     const donateButton = document.createElement("button");
-                    donateButton.classList.add("btn", "btn-primary", "donate-btn", "float-end");
-                    donateButton.textContent = "Donate";
-                    donateButton.setAttribute('data-post-id', charity.id);
-                    donateButton.setAttribute('data-goal-amount', charity.goal);
-                    donateButton.setAttribute('data-total-donation', charity.totaldonation);
-                    donateButton.id = `donateBtn_${charity.id}`;
+                    const logintoDonate = document.createElement("button");
 
-                    donateButton.setAttribute("data-bs-toggle", "modal");
-                    donateButton.setAttribute("data-bs-target", "#donateModal");
+                    if ('<?= $current_admin_id ?>') {
+                        donateButton.classList.add("btn", "btn-primary", "donate-btn", "float-end");
+                        donateButton.textContent = "Donate";
+                        donateButton.setAttribute('data-post-id', charity.id);
+                        donateButton.setAttribute('data-goal-amount', charity.goal);
+                        donateButton.setAttribute('data-total-donation', charity.totaldonation);
+                        donateButton.id = `donateBtn_${charity.id}`;
+                        donateButton.setAttribute("data-bs-toggle", "modal");
+                        donateButton.setAttribute("data-bs-target", "#donateModal");
+                    } else {
+                        console.log("hi");
+                        // Error.classList.add("card-text", "text-center", "alert", "alert-danger");
+                        // Error.textContent = `You need to be logged-in to donate.`;
+                        logintoDonate.classList.add("btn", "btn-primary", "float-end");
+                        logintoDonate.textContent = "Login to donate";
+                        logintoDonate.onclick = function () {
+                            window.location.href = '<?= ROOT_URL ?>login.php';
 
+                        }
+                    }
 
                     // here we're putting all the nodes in the DOM tree of this page
 
@@ -201,7 +223,13 @@ $posts = mysqli_query($connection, $query);
                     cardBody.appendChild(chairtyCategory);
                     cardBody.appendChild(charityDescription);
                     cardBody.appendChild(goalAmount);
-                    cardBody.appendChild(donateButton);
+                    // cardBody.appendChild(Error);
+
+                    if ('<?= $current_admin_id ?>') {
+                        cardBody.appendChild(donateButton);
+                    } else {
+                        cardBody.appendChild(logintoDonate);
+                    }
                     charityDiv.appendChild(cardBody);
                     charityListContainer.appendChild(charityDiv);
 
